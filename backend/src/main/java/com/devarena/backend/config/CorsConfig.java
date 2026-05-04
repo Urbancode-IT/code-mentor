@@ -16,12 +16,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("https://code-mentor-jet.vercel.app/")
+                .allowedOrigins("https://code-mentor-jet.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
         registry.addMapping("/uploads/**")
-                .allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500",
+                .allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500","https://code-mentor-jet.vercel.app",
                         "http://localhost:3000", "http://127.0.0.1:3000",
                         "https://dev-arena-uc.netlify.app")
                 .allowedMethods("GET")
@@ -31,7 +31,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
+        config.setAllowedOrigins(List.of("https://code-mentor-jet.vercel.app",
                 "http://localhost:5500", "http://127.0.0.1:5500",
                 "http://localhost:3000", "http://127.0.0.1:3000",
                 "https://dev-arena-uc.netlify.app"
