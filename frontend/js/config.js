@@ -5,7 +5,7 @@
 
 // Your deployed backend base URL (no trailing slash, no /api).
 // e.g. 'https://devarena-backend.onrender.com'
-const PROD_BACKEND_URL = 'https://dev-arena-production.up.railway.app';
+const PROD_BACKEND_URL = 'https://code-mentor-p7kr.onrender.com';
 
 // Local dev backend (Spring Boot default).
 const DEV_BACKEND_URL = 'http://localhost:8080';
@@ -15,7 +15,7 @@ const isLocal =
     location.hostname === '127.0.0.1' ||
     location.hostname === '';
 
-const BACKEND_BASE = isLocal ? DEV_BACKEND_URL : PROD_BACKEND_URL;
+const BACKEND_BASE = PROD_BACKEND_URL;
 
 window.BACKEND_BASE_URL = BACKEND_BASE;        // for static assets like /uploads/...
 window.API_BASE_URL = `${BACKEND_BASE}/api`;   // for REST calls
