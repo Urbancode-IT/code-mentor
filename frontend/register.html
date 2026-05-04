@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="auth-page">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join the DevArena community</p>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" required minlength="3" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="display-name">Display Name</label>
+                    <input type="text" class="form-control" id="display-name" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" required minlength="8" placeholder="Enter your password">
+                    <div class="password-error" id="password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm-password" required placeholder="Repeat your password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+            </form>
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

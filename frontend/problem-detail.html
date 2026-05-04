@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge Detail - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container">
+        <a href="index.html" style="display: inline-block; margin-bottom: 1rem; color: var(--text-light); font-size: 0.9rem;">&larr; Back to Challenges</a>
+
+        <div class="detail-layout">
+            <!-- Left: Top Solutions -->
+            <div class="top-solutions-panel">
+                <div class="top-solutions-card">
+                    <div class="top-solutions-header">
+                        <h2>Top Solutions</h2>
+                        <span id="top-solution-count" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+                    </div>
+                    <div class="top-solutions-list" id="top-solutions-list">
+                        <div class="loading"><div class="spinner"></div>Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Problem Detail + All Solutions -->
+            <div class="detail-main">
+                <div class="problem-detail-header" id="problem-header">
+                    <div class="loading"><div class="spinner"></div>Loading...</div>
+                </div>
+
+                <div class="solutions-header">
+                    <h2>All Solutions <span id="solution-count" style="color: var(--text-muted);"></span></h2>
+                    <button class="btn btn-primary" id="submit-solution-btn" style="display: none;">+ Submit Solution</button>
+                </div>
+
+                <div id="solutions-list">
+                    <div class="loading"><div class="spinner"></div>Loading solutions...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/problem-detail.js"></script>
+</body>
+</html>

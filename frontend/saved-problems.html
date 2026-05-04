@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Challenges - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container">
+        <div class="saved-page-header">
+            <div>
+                <h1 class="saved-page-title">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    Saved Challenges
+                </h1>
+                <p class="saved-page-subtitle">Problems you've bookmarked to solve later</p>
+            </div>
+            <span class="saved-count" id="saved-count"></span>
+        </div>
+
+        <div class="cards-grid" id="saved-grid">
+            <div class="loading"><div class="spinner"></div>Loading saved challenges...</div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/saved-problems.js"></script>
+</body>
+</html>

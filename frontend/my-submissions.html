@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submissions - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="submissions-hero">
+            <h1>My Submissions</h1>
+            <p>Track all your solutions across challenges</p>
+        </div>
+
+        <div class="submissions-stats" id="submissions-stats"></div>
+
+        <div class="submissions-toolbar">
+            <div class="sort-pills">
+                <button class="sort-pill active" data-filter="ALL">All</button>
+                <button class="sort-pill" data-filter="recent">Recent</button>
+                <button class="sort-pill" data-filter="most-liked">Most Liked</button>
+            </div>
+        </div>
+
+        <div id="submissions-list">
+            <div class="loading"><div class="spinner"></div>Loading submissions...</div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/my-submissions.js"></script>
+</body>
+</html>

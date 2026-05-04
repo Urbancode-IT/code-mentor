@@ -1,0 +1,11 @@
+target/
+uploads/
+*.log
+hs_err_pid*.log
+replay_pid*.log
+.idea/
+.vscode/
+.git/
+.gitignore
+*.iml
+HELP.md

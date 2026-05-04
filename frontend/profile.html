@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="profile-hero" id="profile-card">
+            <div class="loading"><div class="spinner"></div>Loading profile...</div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-section-header">
+                <h2>Your Solutions</h2>
+                <button class="btn btn-danger btn-sm" id="logout-btn">Logout</button>
+            </div>
+
+            <div id="user-solutions">
+                <div class="loading"><div class="spinner"></div>Loading solutions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="edit-profile-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button class="modal-close" id="edit-modal-close">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <!-- Avatar Upload Section -->
+                <div class="avatar-upload-section">
+                    <div class="avatar-preview" id="avatar-preview">
+                        <img id="avatar-preview-img" src="" alt="" style="display:none;">
+                        <span id="avatar-preview-initials" class="avatar-preview-initials"></span>
+                    </div>
+                    <div class="avatar-upload-actions">
+                        <label class="btn btn-outline btn-sm avatar-upload-btn" for="avatar-file-input">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Upload Photo
+                        </label>
+                        <button type="button" class="btn btn-outline btn-sm avatar-upload-btn" id="camera-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            Take Photo
+                        </button>
+                        <button type="button" class="btn btn-ghost btn-sm" id="avatar-remove-btn" style="display:none;">Remove</button>
+                        <input type="file" id="avatar-file-input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;">
+                    </div>
+                    <small class="avatar-hint">JPEG, PNG, GIF, or WebP. Max 5MB.</small>
+                    <div class="avatar-upload-progress" id="avatar-progress" style="display:none;">
+                        <div class="avatar-progress-bar" id="avatar-progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-username">Username</label>
+                    <input type="text" class="form-control" id="edit-username" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email</label>
+                    <input type="email" class="form-control" id="edit-email" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="edit-display-name">Display Name</label>
+                    <input type="text" class="form-control" id="edit-display-name" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="edit-bio">Bio</label>
+                    <textarea class="form-control" id="edit-bio" placeholder="Tell us about yourself..." maxlength="2000" style="min-height: 100px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="change-password-modal">
+        <div class="modal" style="max-width: 420px;">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" id="password-modal-close">&times;</button>
+            </div>
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" class="form-control" id="current-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" class="form-control" id="new-password" required minlength="8" placeholder="Enter new password">
+                    <div class="password-error" id="password-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirm-new-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Camera Capture Modal -->
+    <div class="modal-overlay" id="camera-modal">
+        <div class="modal" style="max-width: 480px; text-align: center;">
+            <div class="modal-header">
+                <h2>Take Photo</h2>
+                <button class="modal-close" id="camera-modal-close">&times;</button>
+            </div>
+            <div class="camera-container">
+                <video id="camera-video" autoplay playsinline style="width: 100%; border-radius: var(--radius-sm); background: #000;"></video>
+                <canvas id="camera-canvas" style="display: none;"></canvas>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.75rem; justify-content: center;">
+                <button type="button" class="btn btn-primary" id="camera-capture-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                    Capture
+                </button>
+                <button type="button" class="btn btn-outline" id="camera-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>

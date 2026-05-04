@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redeem Offers - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="offers-hero">
+            <h1>Redeem <span>Offers</span></h1>
+            <p>Use your credits to unlock certifications and courses!</p>
+            <div class="user-credits-display" id="user-credits">
+                <span class="credits-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </span>
+                <span id="credits-count">0</span> credits available
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <button class="btn btn-primary" id="create-offer-btn" style="display: none;">+ New Offer</button>
+        </div>
+
+        <div class="offers-grid" id="offers-grid">
+            <div class="loading"><div class="spinner"></div>Loading offers...</div>
+        </div>
+    </div>
+
+    <!-- Create Offer Modal (Admin) -->
+    <div class="modal-overlay" id="offer-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Create Offer</h2>
+                <button class="modal-close" id="offer-modal-close">&times;</button>
+            </div>
+            <form id="offer-form">
+                <div class="form-group">
+                    <label for="offer-title">Title</label>
+                    <input type="text" class="form-control" id="offer-title" required placeholder="e.g. Python Certification Course">
+                </div>
+                <div class="form-group">
+                    <label for="offer-description">Description</label>
+                    <textarea class="form-control" id="offer-description" required placeholder="Describe what the student gets..." style="min-height: 100px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="offer-credits">Credits Required</label>
+                    <input type="number" class="form-control" id="offer-credits" required min="1" placeholder="e.g. 50">
+                </div>
+                <div class="form-group">
+                    <label for="offer-link">Course Link (optional)</label>
+                    <input type="url" class="form-control" id="offer-link" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Create Offer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/offers.js"></script>
+</body>
+</html>

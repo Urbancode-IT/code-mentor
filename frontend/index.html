@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevArena - Coding Challenges</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Code. Build. <span>Showcase.</span></h1>
+            <p>Pick a challenge, build your solution.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search challenges by title or description..." class="search-input">
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filters" id="category-filters">
+            <button class="category-btn active" data-category="ALL">All Domains</button>
+            <button class="category-btn" data-category="Data Science">Data Science</button>
+            <button class="category-btn" data-category="Analytics">Analytics</button>
+            <button class="category-btn" data-category="Machine Learning">Machine Learning</button>
+            <button class="category-btn" data-category="Web Development">Web Development</button>
+            <button class="category-btn" data-category="App Development">App Development</button>
+            <button class="category-btn" data-category="DevOps">DevOps</button>
+            <button class="category-btn" data-category="Cybersecurity">Cybersecurity</button>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <div class="filter-dropdown">
+                <button class="filter-toggle" id="filter-toggle">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    <span id="filter-label">All Levels</span>
+                    <svg class="filter-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="filter-menu" id="filter-menu">
+                    <button class="filter-option active" data-filter="ALL">
+                        <span class="filter-dot filter-dot-all"></span> All Levels
+                    </button>
+                    <button class="filter-option" data-filter="BEGINNER">
+                        <span class="filter-dot filter-dot-beginner"></span> Beginner
+                    </button>
+                    <button class="filter-option" data-filter="INTERMEDIATE">
+                        <span class="filter-dot filter-dot-intermediate"></span> Intermediate
+                    </button>
+                    <button class="filter-option" data-filter="ADVANCED">
+                        <span class="filter-dot filter-dot-advanced"></span> Advanced
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="create-problem-btn" style="display: none;">+ New Challenge</button>
+        </div>
+
+        <div class="cards-grid" id="problems-grid">
+            <div class="loading"><div class="spinner"></div>Loading challenges...</div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Problem Modal -->
+    <div class="modal-overlay" id="problem-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Challenge</h2>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <form id="problem-form">
+                <div class="form-group">
+                    <label for="prob-title">Title</label>
+                    <input type="text" class="form-control" id="prob-title" required placeholder="e.g. Build a REST API">
+                </div>
+                <div class="form-group">
+                    <label for="prob-introduction">Introduction</label>
+                    <textarea class="form-control" id="prob-introduction" required placeholder="Provide an overview of the problem — what it's about, context, and goals..." style="min-height: 100px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prob-requirements">Requirements</label>
+                    <textarea class="form-control" id="prob-requirements" required placeholder="List the requirements (one per line)...&#10;1. Must support user authentication&#10;2. Data should persist in a database&#10;3. ..." style="min-height: 140px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prob-suggested-impl">Suggested Implementation (optional)</label>
+                    <textarea class="form-control" id="prob-suggested-impl" placeholder="Suggest frameworks, tools, architecture patterns, or hints...&#10;- Use Spring Boot or Express.js&#10;- Consider using WebSockets for real-time..." style="min-height: 100px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prob-difficulty">Difficulty</label>
+                    <select class="form-control" id="prob-difficulty" required>
+                        <option value="BEGINNER">Beginner</option>
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="ADVANCED">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prob-category">Category</label>
+                    <select class="form-control" id="prob-category" required>
+                        <option value="" disabled selected>Select a domain...</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Analytics">Analytics</option>
+                        <option value="Machine Learning">Machine Learning</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="App Development">App Development</option>
+                        <option value="DevOps">DevOps</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prob-tags">Tags (comma-separated)</label>
+                    <input type="text" class="form-control" id="prob-tags" placeholder="e.g. backend,java,rest-api">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Save Challenge</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/problems.js"></script>
+</body>
+</html>

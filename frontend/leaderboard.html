@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container" style="max-width: 960px;">
+        <!-- Tab Toggle -->
+        <div class="lb-tab-wrapper">
+            <div class="lb-tab-toggle">
+                <button class="lb-tab active" data-tab="weekly">Weekly</button>
+                <button class="lb-tab" data-tab="alltime">All Time</button>
+                <div class="lb-tab-slider"></div>
+            </div>
+        </div>
+
+        <div id="leaderboard-container">
+            <div class="loading"><div class="spinner"></div>Loading leaderboard...</div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/leaderboard.js"></script>
+</body>
+</html>

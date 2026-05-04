@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Solution - DevArena</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">Dev<span>Arena</span></a>
+        <div class="navbar-links" id="nav-links"></div>
+    </nav>
+
+    <div class="container" style="max-width: 700px;">
+        <a href="javascript:history.back()" style="display: inline-block; margin-bottom: 1rem; color: var(--text-light); font-size: 0.9rem;">&larr; Back</a>
+
+        <div style="background: var(--card-bg); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow);">
+            <h2 style="margin-bottom: 0.5rem;">Submit Your Solution</h2>
+            <p style="color: var(--text-muted); margin-bottom: 0.25rem;">
+                For challenge: <strong id="problem-title">Loading...</strong>
+                <span id="problem-difficulty" class="badge" style="margin-left: 0.5rem;"></span>
+            </p>
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 1.25rem 0;">
+
+            <form id="solution-form">
+                <div class="form-group">
+                    <label for="repo-url">Git Repository URL</label>
+                    <input type="url" class="form-control" id="repo-url" required
+                        placeholder="https://github.com/username/repo">
+                </div>
+                <div class="form-group">
+                    <label for="solution-desc">Description</label>
+                    <textarea class="form-control" id="solution-desc" required
+                        placeholder="Describe your approach, tech stack used, and any highlights of your solution..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="solution-tags">Tags (comma-separated)</label>
+                    <input type="text" class="form-control" id="solution-tags"
+                        placeholder="e.g. React, Node.js, MongoDB, TypeScript">
+                    <small style="color: var(--text-muted); font-size: 0.8rem;">Technologies and tools used in your solution</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Submit Solution</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/mascot.js"></script>
+    <script type="module" src="js/submit-solution.js"></script>
+</body>
+</html>
