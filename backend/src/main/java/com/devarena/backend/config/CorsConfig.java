@@ -16,7 +16,6 @@ public class CorsConfig implements WebMvcConfigurer {
     private static final List<String> ALLOWED_ORIGINS = List.of(
             "https://codementor.urbancode.in",
             "https://code-mentor-jet.vercel.app",
-            "https://dev-arena-uc.netlify.app",
             "http://localhost:5500",
             "http://127.0.0.1:5500",
             "http://localhost:3000",
