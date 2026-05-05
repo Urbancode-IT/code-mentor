@@ -5,7 +5,7 @@
 
 // Your deployed backend base URL (no trailing slash, no /api).
 // e.g. 'https://devarena-backend.onrender.com'
-const PROD_BACKEND_URL = 'https://codementor.urbancode.in';
+const PROD_BACKEND_URL = 'https://devarena-backend.onrender.com';
 
 // Local dev backend (Spring Boot default).
 const DEV_BACKEND_URL = 'http://localhost:8080';
