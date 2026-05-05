@@ -1,4 +1,3 @@
-```java
 package com.devarena.backend.config;
 
 import com.devarena.backend.security.JwtAuthenticationFilter;
@@ -101,4 +100,3 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
-```
