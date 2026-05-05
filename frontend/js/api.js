@@ -139,7 +139,10 @@ export function showToast(message, type = 'success') {
 }
 
 export function timeAgo(dateString) {
-    const date = new Date(dateString);
+    // Backend serializes LocalDateTime without a timezone (e.g. "2026-05-05T14:30:00").
+    // Server runs in UTC, so treat naked strings as UTC by appending Z.
+    const hasTz = /Z|[+-]\d{2}:?\d{2}$/.test(dateString);
+    const date = new Date(hasTz ? dateString : dateString + 'Z');
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
 
