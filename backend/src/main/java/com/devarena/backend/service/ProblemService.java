@@ -26,30 +26,35 @@ public class ProblemService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ProblemResponse> getAllProblems() {
         return problemRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ProblemResponse getProblemById(Long id) {
         Problem problem = problemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Problem not found with id: " + id));
         return toResponse(problem);
     }
 
+    @Transactional(readOnly = true)
     public List<ProblemResponse> filterByDifficulty(String difficulty) {
         return problemRepository.findByDifficultyOrderByCreatedAtDesc(difficulty.toUpperCase()).stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ProblemResponse> filterByCategory(String category) {
         return problemRepository.findByCategoryIgnoreCaseOrderByCreatedAtDesc(category).stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ProblemResponse> search(String query) {
         return problemRepository.findByTitleContainingIgnoreCaseOrIntroductionContainingIgnoreCase(query, query).stream()
                 .map(this::toResponse)
