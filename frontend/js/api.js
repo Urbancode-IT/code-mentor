@@ -89,7 +89,10 @@ function setupThemeToggle() {
 
 export async function apiFetch(path, options = {}) {
     const url = `${API_BASE}${path}`;
-    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    const headers = { ...options.headers };
+    if (options.body && !headers['Content-Type']) {
+        headers['Content-Type'] = 'application/json';
+    }
     const token = getToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;

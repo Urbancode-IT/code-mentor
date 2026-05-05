@@ -13,17 +13,25 @@ import java.util.List;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    private static final List<String> ALLOWED_ORIGINS = List.of(
+            "https://codementor.urbancode.in",
+            "https://code-mentor-jet.vercel.app",
+            "https://dev-arena-uc.netlify.app",
+            "http://localhost:5500",
+            "http://127.0.0.1:5500",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000"
+    );
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("https://code-mentor-jet.vercel.app","https://codementor.urbancode.in")
+                .allowedOrigins(ALLOWED_ORIGINS.toArray(String[]::new))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
         registry.addMapping("/uploads/**")
-                .allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500","https://code-mentor-jet.vercel.app",
-                        "http://localhost:3000", "http://127.0.0.1:3000",
-                        "https://dev-arena-uc.netlify.app","https://codementor.urbancode.in")
+                .allowedOrigins(ALLOWED_ORIGINS.toArray(String[]::new))
                 .allowedMethods("GET")
                 .allowedHeaders("*");
     }
@@ -31,11 +39,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://code-mentor-jet.vercel.app","https://codementor.urbancode.in",
-                "http://localhost:5500", "http://127.0.0.1:5500",
-                "http://localhost:3000", "http://127.0.0.1:3000",
-                "https://dev-arena-uc.netlify.app"
-        ));
+        config.setAllowedOrigins(ALLOWED_ORIGINS);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
