@@ -39,30 +39,30 @@
 
                 <div class="solutions-header">
                     <h2>All Solutions <span id="solution-count" style="color: var(--text-muted);"></span></h2>
-                    <!-- <button class="btn btn-primary" id="submit-solution-btn" style="display: none;">+ Submit Solution</button> -->
-                     <!-- Submit / Login Buttons -->
-<div id="auth-action-buttons">
-    <button 
-        class="btn btn-primary" 
-        id="submit-solution-btn" 
-        style="display: none;"
-    >
-        + Submit Solution
-    </button>
-
-    <button 
-        class="btn btn-secondary" 
-        id="login-to-submit-btn" 
-        style="display: none;"
-        onclick="window.location.href='login.html'"
-    >
-        🔐 Login to Submit
-    </button>
-</div>
                 </div>
 
                 <div id="solutions-list">
                     <div class="loading"><div class="spinner"></div>Loading solutions...</div>
+                </div>
+
+                <!-- Submit / Login Buttons -->
+                <div id="auth-action-buttons" style="display: flex; justify-content: center; margin-top: 0.25rem; margin-bottom: 1rem;">
+                    <button
+                        class="btn btn-primary"
+                        id="submit-solution-btn"
+                        style="display: none;"
+                    >
+                        + Submit Solution
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        id="login-to-submit-btn"
+                        style="display: none;"
+                        onclick="window.location.href='login.html'"
+                    >
+                        🔐 Login to Submit
+                    </button>
                 </div>
             </div>
         </div>

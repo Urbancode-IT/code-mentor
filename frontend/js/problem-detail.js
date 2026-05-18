@@ -191,10 +191,10 @@ function renderSolutions(solutions) {
 
     if (!solutions || solutions.length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">&#128161;</div>
-                <h3>No solutions yet</h3>
-                <p>Be the first to submit a solution!</p>
+            <div class="empty-state" style="padding: 1rem 1rem 0.5rem;">
+                <div class="empty-state-icon" style="margin-bottom: 0.4rem;">&#128161;</div>
+                <h3 style="margin-bottom: 0.25rem;">No solutions yet</h3>
+                <p style="margin: 0;">Be the first to submit a solution!</p>
             </div>
         `;
         return;
