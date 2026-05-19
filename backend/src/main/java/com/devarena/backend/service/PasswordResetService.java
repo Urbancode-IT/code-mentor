@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class PasswordResetService {
@@ -63,7 +64,9 @@ public class PasswordResetService {
         tokenRepository.save(token);
 
         String resetLink = frontendBaseUrl + "/reset-password.html?token=" + rawToken;
-        sendResetEmail(user.getEmail(), user.getDisplayName(), resetLink);
+        String to = user.getEmail();
+        String name = user.getDisplayName();
+        CompletableFuture.runAsync(() -> sendResetEmail(to, name, resetLink));
     }
 
     @Transactional
