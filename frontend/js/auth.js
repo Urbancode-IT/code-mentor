@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', handleRegister);
     }
 
+    const forgotForm = document.getElementById('forgot-form');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', handleForgotPassword);
+    }
+
+    const resetForm = document.getElementById('reset-form');
+    if (resetForm) {
+        resetForm.addEventListener('submit', handleResetPassword);
+    }
+
     // Clear error when user starts typing
     const passwordInput = document.getElementById('password');
     if (passwordInput) {
@@ -107,6 +117,68 @@ async function handleLogin(e) {
         showToast(err.message || 'Login failed', 'error');
         btn.disabled = false;
         btn.textContent = 'Login';
+    }
+}
+
+async function handleForgotPassword(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+        const data = await apiFetch('/auth/forgot-password', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+            }),
+        });
+        showToast(data.message || 'If an account exists for that email, a reset link has been sent.', 'success');
+        btn.textContent = 'Link sent';
+    } catch (err) {
+        showToast(err.message || 'Could not send reset link', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Send reset link';
+    }
+}
+
+async function handleResetPassword(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    if (password !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+
+    if (!showPasswordErrors(password, 'password-error')) {
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (!token) {
+        showToast('Reset link is invalid or missing the token.', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Resetting...';
+
+    try {
+        const data = await apiFetch('/auth/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ token, newPassword: password }),
+        });
+        showToast(data.message || 'Password reset. Please log in.', 'success');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+    } catch (err) {
+        showToast(err.message || 'Could not reset password', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Reset password';
     }
 }
 

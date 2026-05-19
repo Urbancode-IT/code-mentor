@@ -58,6 +58,23 @@
     margin-top: 0.5rem;
 }
 
+.form-aux {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.4rem;
+}
+
+.forgot-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+    color: var(--neon);
+    text-decoration: underline;
+}
+
 .auth-divider {
     display: flex;
     align-items: center;
