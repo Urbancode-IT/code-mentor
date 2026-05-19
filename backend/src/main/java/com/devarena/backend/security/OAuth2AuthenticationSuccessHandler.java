@@ -75,8 +75,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        User user = userRepository.findByEmail(email).orElseGet(() ->
-                createUser(provider, providerId, email, name, avatarUrl));
+        final String resolvedEmail = email;
+        User user = userRepository.findByEmail(resolvedEmail).orElseGet(() ->
+                createUser(provider, providerId, resolvedEmail, name, avatarUrl));
 
         if (user.getAuthProvider() == null) {
             user.setAuthProvider(provider);
