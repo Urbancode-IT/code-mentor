@@ -26,7 +26,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (errorEl) errorEl.innerHTML = '';
         });
     }
+
+    wireOAuthButtons();
+    showOAuthErrorIfPresent();
 });
+
+function wireOAuthButtons() {
+    const backend = window.BACKEND_BASE_URL;
+    const google = document.getElementById('oauth-google');
+    if (google) google.href = `${backend}/oauth2/authorization/google`;
+    const github = document.getElementById('oauth-github');
+    if (github) github.href = `${backend}/oauth2/authorization/github`;
+}
+
+function showOAuthErrorIfPresent() {
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get('oauth_error');
+    if (err) {
+        showToast(err, 'error');
+        const url = new URL(window.location.href);
+        url.searchParams.delete('oauth_error');
+        window.history.replaceState({}, '', url.toString());
+    }
+}
 
 function validatePassword(password) {
     return [

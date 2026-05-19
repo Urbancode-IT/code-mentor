@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signing you in - DevArena</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h2 id="status-title">Signing you in...</h2>
+            <p class="subtitle" id="status-subtitle">Finishing your social login.</p>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script type="module">
+        import { setToken, setCurrentUser } from './js/api.js';
+
+        const fragment = window.location.hash.startsWith('#')
+            ? window.location.hash.slice(1)
+            : window.location.hash;
+        const params = new URLSearchParams(fragment);
+        const token = params.get('token');
+
+        const title = document.getElementById('status-title');
+        const subtitle = document.getElementById('status-subtitle');
+
+        if (!token) {
+            title.textContent = 'Sign-in failed';
+            subtitle.textContent = 'No token received. Please try again.';
+            setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+        } else {
+            setToken(token);
+            setCurrentUser({
+                username: params.get('username') || '',
+                role: params.get('role') || 'USER',
+                displayName: params.get('displayName') || '',
+                userId: Number(params.get('userId')) || null,
+                profilePicUrl: params.get('profilePicUrl') || null,
+                credits: Number(params.get('credits')) || 0,
+            });
+            sessionStorage.setItem('just_logged_in', '1');
+            window.location.replace('index.html');
+        }
+    </script>
+</body>
+</html>

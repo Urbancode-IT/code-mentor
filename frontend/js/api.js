@@ -98,7 +98,25 @@ export async function apiFetch(path, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(url, { ...options, headers });
+    const { timeoutMs = 15000, ...fetchOptions } = options;
+    const controller = new AbortController();
+    const timeoutId = fetchOptions.signal ? null : setTimeout(() => controller.abort(), timeoutMs);
+
+    let response;
+    try {
+        response = await fetch(url, {
+            ...fetchOptions,
+            headers,
+            signal: fetchOptions.signal || controller.signal
+        });
+    } catch (err) {
+        if (err.name === 'AbortError') {
+            throw new Error(`Backend did not respond at ${API_BASE}. Make sure the backend is running.`);
+        }
+        throw new Error(`Could not reach backend at ${API_BASE}: ${err.message}`);
+    } finally {
+        if (timeoutId) clearTimeout(timeoutId);
+    }
 
     if (response.status === 401) {
         const currentPage = window.location.pathname.split('/').pop();
