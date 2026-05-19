@@ -47,4 +47,10 @@ public class User {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "auth_provider", length = 20)
+    private String authProvider;
+
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
 }

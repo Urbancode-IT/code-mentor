@@ -28,17 +28,19 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
         String role = userDetails.getAuthorities().stream()
                 .findFirst()
                 .map(a -> a.getAuthority().replace("ROLE_", ""))
                 .orElse("USER");
+        return generateTokenForUser(userDetails.getUsername(), role);
+    }
 
+    public String generateTokenForUser(String username, String role) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
         return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .claim("role", role)
+                .subject(username)
+                .claim("role", role == null ? "USER" : role)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
