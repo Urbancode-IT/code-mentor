@@ -7,18 +7,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -27,16 +36,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
+    private final OAuth2AuthorizedClientService authorizedClientService;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${app.frontend.base-url}")
     private String frontendBaseUrl;
 
     public OAuth2AuthenticationSuccessHandler(UserRepository userRepository,
                                               PasswordEncoder passwordEncoder,
-                                              JwtTokenProvider tokenProvider) {
+                                              JwtTokenProvider tokenProvider,
+                                              OAuth2AuthorizedClientService authorizedClientService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
+        this.authorizedClientService = authorizedClientService;
     }
 
     @Override
@@ -52,6 +65,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String name = extractName(provider, attrs);
         String providerId = extractProviderId(provider, attrs);
         String avatarUrl = extractAvatarUrl(provider, attrs);
+
+        if ((email == null || email.isBlank()) && "github".equalsIgnoreCase(provider)) {
+            email = fetchPrimaryGithubEmail(oauthToken);
+        }
 
         if (email == null || email.isBlank()) {
             redirectWithError(response, "Email permission is required to sign in.");
@@ -149,6 +166,43 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return pic == null ? null : pic.toString();
         }
         return null;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private String fetchPrimaryGithubEmail(OAuth2AuthenticationToken oauthToken) {
+        try {
+            OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
+                    oauthToken.getAuthorizedClientRegistrationId(),
+                    oauthToken.getName());
+            if (client == null || client.getAccessToken() == null) return null;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(client.getAccessToken().getTokenValue());
+            headers.add(HttpHeaders.ACCEPT, "application/vnd.github+json");
+
+            RequestEntity<Void> req = new RequestEntity<>(headers, HttpMethod.GET,
+                    URI.create("https://api.github.com/user/emails"));
+            ResponseEntity<List> resp = restTemplate.exchange(req, List.class);
+            List<Map<String, Object>> emails = resp.getBody();
+            if (emails == null) return null;
+
+            String primaryVerified = null;
+            String anyVerified = null;
+            for (Map<String, Object> entry : emails) {
+                String addr = (String) entry.get("email");
+                Boolean primary = (Boolean) entry.get("primary");
+                Boolean verified = (Boolean) entry.get("verified");
+                if (addr == null || Boolean.FALSE.equals(verified)) continue;
+                if (Boolean.TRUE.equals(primary)) {
+                    primaryVerified = addr;
+                    break;
+                }
+                if (anyVerified == null) anyVerified = addr;
+            }
+            return primaryVerified != null ? primaryVerified : anyVerified;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void redirectWithError(HttpServletResponse response, String message) throws IOException {
