@@ -3,7 +3,9 @@ import { apiFetch, setToken, setCurrentUser, isLoggedIn, updateNavbar, showToast
 document.addEventListener('DOMContentLoaded', () => {
     updateNavbar();
 
-    if (isLoggedIn()) {
+    const currentPage = window.location.pathname.split('/').pop();
+    const pagesThatAllowLoggedInUsers = ['forgot-password.html', 'reset-password.html'];
+    if (isLoggedIn() && !pagesThatAllowLoggedInUsers.includes(currentPage)) {
         window.location.href = 'index.html';
         return;
     }
