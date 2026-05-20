@@ -61,12 +61,14 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
         } catch (org.springframework.security.authentication.BadCredentialsException e) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new IllegalArgumentException("Invalid email or password");
         }
 
+        String resolvedUsername = ((org.springframework.security.core.userdetails.UserDetails)
+                authentication.getPrincipal()).getUsername();
         String token = tokenProvider.generateToken(authentication);
 
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findByUsername(resolvedUsername)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return new AuthResponse(token, user.getUsername(), user.getRole().name(),

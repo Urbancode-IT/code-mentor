@@ -121,8 +121,8 @@ export async function apiFetch(path, options = {}) {
     if (response.status === 401) {
         const currentPage = window.location.pathname.split('/').pop();
         if (currentPage === 'login.html' || currentPage === 'register.html') {
-            const error = await response.json().catch(() => ({ message: 'Invalid username or password' }));
-            throw new Error(error.message || 'Invalid username or password');
+            const error = await response.json().catch(() => ({ message: 'Invalid email or password' }));
+            throw new Error(error.message || 'Invalid email or password');
         }
         localStorage.removeItem('jwt_token');
         localStorage.removeItem('current_user');

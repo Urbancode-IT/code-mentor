@@ -98,7 +98,7 @@ async function handleLogin(e) {
         const data = await apiFetch('/auth/login', {
             method: 'POST',
             body: JSON.stringify({
-                username: document.getElementById('username').value,
+                username: document.getElementById('login-identifier').value,
                 password: document.getElementById('password').value,
             }),
         });
