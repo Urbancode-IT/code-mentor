@@ -14,9 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -28,7 +31,8 @@ import java.util.concurrent.CompletableFuture;
 public class PasswordResetService {
 
     private static final Logger log = LoggerFactory.getLogger(PasswordResetService.class);
-    private static final String RESEND_ENDPOINT = "https://api.resend.com/emails";
+    private static final String GOOGLE_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
+    private static final String GMAIL_SEND_ENDPOINT = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -38,11 +42,17 @@ public class PasswordResetService {
     @Value("${app.frontend.base-url}")
     private String frontendBaseUrl;
 
-    @Value("${app.mail.resend.api-key}")
-    private String resendApiKey;
+    @Value("${app.mail.gmail.client-id}")
+    private String gmailClientId;
 
-    @Value("${app.mail.from}")
-    private String mailFrom;
+    @Value("${app.mail.gmail.client-secret}")
+    private String gmailClientSecret;
+
+    @Value("${app.mail.gmail.refresh-token}")
+    private String gmailRefreshToken;
+
+    @Value("${app.mail.gmail.sender}")
+    private String gmailSender;
 
     @Value("${app.password-reset.token-ttl-minutes:30}")
     private long tokenTtlMinutes;
@@ -102,39 +112,81 @@ public class PasswordResetService {
     }
 
     private void sendResetEmail(String to, String displayName, String resetLink) {
-        if (resendApiKey == null || resendApiKey.isBlank()) {
-            log.error("RESEND_API_KEY is not set; cannot send password reset email to {}", to);
+        if (isBlank(gmailClientId) || isBlank(gmailClientSecret) || isBlank(gmailRefreshToken) || isBlank(gmailSender)) {
+            log.error("Gmail credentials are not fully configured; cannot send password reset email to {}", to);
             return;
         }
         try {
-            String greeting = (displayName == null || displayName.isBlank()) ? "" : "Hi " + displayName + ",<br><br>";
-            String html =
-                    greeting +
-                            "We received a request to reset the password on your DevArena account.<br>" +
-                            "Click the link below to set a new password. The link expires in " + tokenTtlMinutes + " minutes.<br><br>" +
-                            "<a href=\"" + resetLink + "\">Reset my password</a><br><br>" +
-                            "Or paste this URL into your browser:<br>" + resetLink + "<br><br>" +
-                            "If you did not request this, you can safely ignore this email.<br><br>" +
-                            "Thanks,<br>The DevArena Team";
+            String accessToken = exchangeRefreshTokenForAccessToken();
+            if (accessToken == null) return;
 
-            Map<String, Object> body = Map.of(
-                    "from", mailFrom,
-                    "to", new String[]{to},
-                    "subject", "Reset your DevArena password",
-                    "html", html
-            );
+            String rawMessage = buildMimeMessage(to, displayName, resetLink);
+            String encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(rawMessage.getBytes(StandardCharsets.UTF_8));
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(resendApiKey);
+            headers.setBearerAuth(accessToken);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            RequestEntity<Map<String, Object>> request = new RequestEntity<>(body, headers,
-                    org.springframework.http.HttpMethod.POST, URI.create(RESEND_ENDPOINT));
+            Map<String, String> body = Map.of("raw", encoded);
+            RequestEntity<Map<String, String>> request = new RequestEntity<>(body, headers,
+                    org.springframework.http.HttpMethod.POST, URI.create(GMAIL_SEND_ENDPOINT));
 
             ResponseEntity<String> response = restTemplate.exchange(request, String.class);
-            log.info("Resend accepted reset email for {}: status {}", to, response.getStatusCode());
+            log.info("Gmail accepted reset email for {}: status {}", to, response.getStatusCode());
         } catch (Exception e) {
             log.error("Failed to send password reset email to {}", to, e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private String exchangeRefreshTokenForAccessToken() {
+        try {
+            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+            form.add("client_id", gmailClientId);
+            form.add("client_secret", gmailClientSecret);
+            form.add("refresh_token", gmailRefreshToken);
+            form.add("grant_type", "refresh_token");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            RequestEntity<MultiValueMap<String, String>> request = new RequestEntity<>(form, headers,
+                    org.springframework.http.HttpMethod.POST, URI.create(GOOGLE_TOKEN_ENDPOINT));
+
+            ResponseEntity<Map> response = restTemplate.exchange(request, Map.class);
+            Map<String, Object> bodyMap = response.getBody();
+            if (bodyMap == null || bodyMap.get("access_token") == null) {
+                log.error("Google token exchange returned no access_token. Body: {}", bodyMap);
+                return null;
+            }
+            return bodyMap.get("access_token").toString();
+        } catch (Exception e) {
+            log.error("Failed to exchange Gmail refresh token for access token", e);
+            return null;
+        }
+    }
+
+    private String buildMimeMessage(String to, String displayName, String resetLink) {
+        String greeting = (displayName == null || displayName.isBlank()) ? "" : "Hi " + displayName + ",<br><br>";
+        String html =
+                greeting +
+                        "We received a request to reset the password on your DevArena account.<br>" +
+                        "Click the link below to set a new password. The link expires in " + tokenTtlMinutes + " minutes.<br><br>" +
+                        "<a href=\"" + resetLink + "\">Reset my password</a><br><br>" +
+                        "Or paste this URL into your browser:<br>" + resetLink + "<br><br>" +
+                        "If you did not request this, you can safely ignore this email.<br><br>" +
+                        "Thanks,<br>The DevArena Team";
+
+        return "From: DevArena <" + gmailSender + ">\r\n" +
+                "To: " + to + "\r\n" +
+                "Subject: Reset your DevArena password\r\n" +
+                "MIME-Version: 1.0\r\n" +
+                "Content-Type: text/html; charset=UTF-8\r\n" +
+                "\r\n" +
+                html;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }
